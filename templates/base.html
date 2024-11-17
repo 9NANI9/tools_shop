@@ -48,25 +48,33 @@
                         <li class="nav-item">
                             <a class="nav-link  text-white" href="carts/cart.html">Корзина</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link  text-white" href="users/login.html">Войти</a>
+                        {% if not user.is_authenticated %}
+                        	<li class="nav-item">
+                            <a class="nav-link  text-white" href="{% url "users:login" %}">Войти</a>
                         </li>
-                        <li class="nav-item dropdown ">
+                            {% else %}
+                             <li class="nav-item dropdown ">
                             <a class="nav-link dropdown-toggle text-white" href="#" role="button"
                                 data-bs-toggle="dropdown" aria-expanded="false">
                                 Мой профиль
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item  text-white" href="carts/cart.html">Корзина</a></li>
-                                <li><a class="dropdown-item  text-white" href="users/profile.html">Личный кабинет</a>
+                                <li><a class="dropdown-item  text-white" href="#">Корзина</a></li>
+                                <li><a class="dropdown-item  text-white" href="{% url "users:profile" %}">Личный кабинет</a>
                                 </li>
-                                <li><a class="dropdown-item  text-white" href="{% url "admin:index" %}">Админ панель</a></li>
+                                {% if user.is_admin or user.is_staff %}
+                                	 <li><a class="dropdown-item  text-white" href="{% url "admin:index" %}">Админ панель</a></li>
                                 <li>
+                                {% endif %} 
+                               
                                     <hr class="dropdown-divider">
                                 </li>
-                                <li><a class="dropdown-item  text-white" href="#">Выйти</a></li>
+                                <li><a class="dropdown-item  text-white" href="{% url "users:logout" %}">Выйти</a></li>
                             </ul>
                         </li>
+                        {% endif %}
+
+
                     </ul>
 
 
@@ -92,7 +100,7 @@
                         aria-expanded="false">
                         Каталог
                         <img class="mx-1" src="{% static "deps/icons/grid-fill.svg" %}" alt="Catalog Icon" width="16"
-                            height="16">
+                             height="16">
                     </button>
                     <ul class="dropdown-menu bg-dark" data-bs-theme="dark">
                         {% tag_categories as categories %}
@@ -107,7 +115,7 @@
                     <button type="button" class="btn btn-dark btn-secondary d-flex" id="modalButton"
                         aria-expanded="false">
                         <img class="mx-1" src="{% static "deps/icons/basket2-fill.svg" %}" alt="Catalog Icon" width="24"
-                            height="24">
+                             height="24">
                         <span id="goods-in-cart-count">0</span>
                     </button>
                 </div>
@@ -185,6 +193,7 @@
                 </div>
                 <div class="col-lg-10">
                     <!-- Контент на странице -->
+                    {% include "includes/notifications.html"%}
                     {% block content %}{% endblock %}
                 </div>
             </div>
